@@ -1,7 +1,7 @@
-import e, { NextFunction, Request, Response, Router } from "express";
+import { Request, Response, Router } from "express";
 
-import { random_integer } from "../utils";
-import data from "../public/files/gerador_jogadores.json";
+import { random_integer } from "../../utils";
+import data from "../../public/files/gerador_jogadores.json";
 
 interface IGeradorJogadores {
     nome: string[],

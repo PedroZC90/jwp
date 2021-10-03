@@ -1,3 +1,2 @@
-export * as BaseRouter from "./home";
-export * as Aula07Router from "./aula07";
-export * as Aula08Router from "./aula08";
+export * as GlobalRouter from "./global";
+export * as ApiRouter from "./api";

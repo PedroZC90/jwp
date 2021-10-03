@@ -1,10 +1,10 @@
 import { NextFunction, Request, Response, Router } from "express";
 import fs from "fs";
 import path from "path";
-import settings from "../settings";
+import settings from "../../settings";
 
-import * as data from "../public/files/data.json";
-import houses from "../public/files/houses.json";
+import * as data from "../../public/files/data.json";
+import houses from "../../public/files/houses.json";
 
 const router: Router = Router();
 

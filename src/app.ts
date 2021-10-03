@@ -6,7 +6,7 @@ import cors from "cors";
 import helmet from "helmet";
 import methodOverride from "method-override";
 
-import { BaseRouter, Aula07Router, Aula08Router } from "./routes";
+import { GlobalRouter, ApiRouter } from "./routes";
 import cookieParser from "cookie-parser";
 import settings from "./settings";
 import morgan from "morgan";
@@ -64,9 +64,8 @@ app.use(
 );
 
 // API Routes
-app.use("/", BaseRouter.default);
-app.use("/api/aula07", Aula07Router.default);
-app.use("/api/aula08", Aula08Router.default);
+app.use("/", GlobalRouter.default);
+app.use("/api", ApiRouter.default);
 
 app.use("*", (request: Request, response: Response) => {
     return response.status(404).json({ message: "page not found." });
