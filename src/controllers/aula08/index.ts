@@ -10,16 +10,18 @@ interface IGeradorJogadores {
     clube: string[]
 }
 
+const info: IGeradorJogadores = data;
+
 const router: Router = Router();
 
 router.get("/gerador", (request: Request, response: Response) => {
     const filtro = request.query.filtro as string;
 
-    const nome: string = data.nome[ random_integer(0, data.nome.length) ];
-    const sobrenome: string = data.sobrenome[ random_integer(0, data.sobrenome.length) ];
+    const nome: string = data.nome[ random_integer(0, info.nome.length) ];
+    const sobrenome: string = data.sobrenome[ random_integer(0, info.sobrenome.length) ];
     const idade: number = random_integer(17, 40);
-    const posicao: string = data.posicao[ random_integer(0, data.posicao.length) ];
-    const clube: string = data.clube[ random_integer(0, data.clube.length) ];
+    const posicao: string = data.posicao[ random_integer(0, info.posicao.length) ];
+    const clube: string = data.clube[ random_integer(0, info.clube.length) ];
 
     let idade_text: string | undefined;
     if (filtro === "idade") {

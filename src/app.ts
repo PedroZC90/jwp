@@ -56,12 +56,10 @@ app.use((request: Request, response: Response, next: NextFunction) => {
 });
 
 // catch 404 and forward to error handler
-app.use(
-    (error: any, request: Request, response: Response, next: NextFunction) => {
-        error.status = 404;
-        next(error);
-    },
-);
+app.use((error: any, request: Request, response: Response, next: NextFunction) => {
+    error.status = 404;
+    next(error);
+});
 
 // API Routes
 app.use("/", GlobalRouter.default);
