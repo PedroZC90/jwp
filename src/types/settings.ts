@@ -14,5 +14,16 @@ export interface ServerSettings {
     jwt?: {
         secret?: string,
         expiration?: string | number
+    },
+    mongoose: {
+        url: string,
+        host?: string,
+        port?: number,
+        user?: string,
+        pass?: string,
+        dbName?: string,
+        autoCreate?: boolean,
+        useNewUrlParser?: boolean,
+        useUnifiedTopology: boolean
     }
-}
+};

@@ -1,15 +1,12 @@
 import { Router } from "express";
 
-// import UserControler from "../controllers/users";
-import Aula07Router from "../controllers/07";
-import Aula08Router from "../controllers/08";
-import Aula09Router from "../controllers/09";
+import AuthControler from "../controllers/auth-ctrl";
+import UserControler from "../controllers/user-ctrl";
+import ComicControler from "../controllers/comic-ctrl";
 
 const router = Router();
-// router.use("/users", UserControler);
-
-router.use("/aulas/07", Aula07Router);
-router.use("/aulas/08", Aula08Router);
-router.use("/aulas/09", Aula09Router);
+router.use("/auth", AuthControler);
+router.use("/users", UserControler);
+router.use("/comics", ComicControler);
 
 export default router;
