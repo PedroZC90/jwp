@@ -12,13 +12,24 @@ const router: Router = Router();
 router.get("/", authenticated , async (request: Request, response: Response) => {
     const page = Number(request.query.page) || 1;
     const rpp = Number(request.query.rpp) || 15;
+    const q: string | undefined = request.query.q as string;
 
-    const users = await User.find()
+    if (page < 0) {
+        return response.status(400).json({ message: "Parameter 'page' can not be negative." });
+    } else if (rpp < 0) {
+        return response.status(400).json({ message: "Parameter 'rpp' can not be negative." });
+    }
+
+    const opts: any = {};
+    if (q) opts.email = { $regex: q, $options: "i" };
+    if (q) opts.name = { $regex: q, $options: "i" };
+
+    const users = await User.find({ ...opts }, { password: 0 })
         .skip(rpp * (page - 1))
         .limit(rpp)
         .exec();
 
-    return response.json({ users });
+    return response.status(200).json({ users });
 });
 
 router.post("/", authenticated, async (request: Request, response: Response) => {
@@ -31,33 +42,50 @@ router.post("/", authenticated, async (request: Request, response: Response) => 
 
     await user.save();
 
-    return response.status(201).json({ user });
+    return response.status(201).json(user);
 });
 
 router.get("/:_id", authenticated, async (request: Request, response: Response) => {
-    const _id: number = Number(request.query._id);
-    const user = await User.findById(_id).exec();
-    return response.json({ user });
+    const _id: string = request.params._id;
+    try {
+        const user = await User.findById(_id).exec();
+        if (!user) {
+            return response.status(400).json({ message: `User ${_id} not found.` });
+        }
+        return response.status(200).json(user);
+    } catch (error) {
+        return response.status(400).json(error);
+    }
 });
 
 router.put("/:_id", authenticated, async (request: Request, response: Response) => {
-    const _id: number = Number(request.query._id);
-    const data = new User(request.body);
+    const _id: string = request.params._id;
 
-    const user = await User.findByIdAndUpdate( _id, data).exec();
-    if (!user) {
-        return response.status(400).json({ message: "No user updated." });
+    const data: any = request.body;
+    if (data._id) delete data._id;
+
+    try {
+        const user = await User.findByIdAndUpdate( _id, { ...data }).exec();
+        if (!user) {
+            return response.status(400).json({ message: `Unable to update user ${_id}.` });
+        }
+
+        return response.status(200).json(user);
+    } catch (error) {
+        return response.status(400).json(error);
     }
-
-    return response.status(200).json({ user });
 });
 
 router.delete("/:_id", authenticated, async (request: Request, response: Response) => {
-    const _id: number = Number(request.query._id);
+    const _id: string = request.params._id;
 
-    await User.replaceOne({ _id }).exec();
+    try {
+        await User.replaceOne({ _id }).exec();
 
-    return response.json({ message: `user ${_id} successfully deleted.` });
+        return response.json({ message: `user ${_id} successfully deleted.` });
+    } catch (error) {
+        return response.status(400).json(error);
+    }
 });
 
 export default router;

@@ -1,63 +1,101 @@
 import { Request, Response, Router } from "express";
 
 import { authenticated } from "../middlewares/authentication-middleware";
-import Comic from "../models/comic";
+import Comic, { IComic } from "../models/Comic";
 
 const router: Router = Router();
 
 // --------------------------------------------------
-// USUARIO
+// COMIC
 // --------------------------------------------------
 
 router.get("/", authenticated , async (request: Request, response: Response) => {
     const page = Number(request.query.page) || 1;
     const rpp = Number(request.query.rpp) || 15;
+    const q: string | undefined = request.query.q as string;
+    const type: string | undefined = request.query.type as string;
+    const status: string | undefined = request.query.status as string;
+    const genres: string[] | undefined = request.query.genre as string[];
 
-    const users = await Comic.find()
+    if (page < 0) {
+        return response.status(400).json({ message: "Parameter 'page' can not be negative." });
+    } else if (rpp < 0) {
+        return response.status(400).json({ message: "Parameter 'rpp' can not be negative." });
+    }
+
+    const opts: any = {};
+    if (q) opts.title = { $regex: q, $options: "i" };
+    if (type) opts.type = type;
+    if (status) opts.status = status;
+    if (genres) opts.genres = { $in: genres };
+
+    const comics = await Comic.find({ ...opts })
         .skip(rpp * (page - 1))
         .limit(rpp)
         .exec();
 
-    return response.json({ users });
+    return response.json({ comics });
 });
 
 router.post("/", authenticated, async (request: Request, response: Response) => {
     const comic = new Comic(request.body);
     
-    const exists = await Comic.exists({ url: comic.url });
-    if (exists) {
-        return response.status(400).json({ message: `comci ${comic.url } already registered` });
+    try {
+        const exists = await Comic.exists({ url: comic.url });
+        if (exists) {
+            return response.status(400).json({ message: `comic ${comic.url } already registered` });
+        }
+
+        await comic.save();
+
+        return response.status(201).json({ comic });
+    } catch (error) {
+        return response.status(400).json(error);
     }
-
-    await comic.save();
-
-    return response.status(201).json({ comic });
 });
 
 router.get("/:_id", authenticated, async (request: Request, response: Response) => {
-    const _id: number = Number(request.query._id);
-    const comic = await Comic.findById(_id).exec();
-    return response.json({ comic });
+    const _id: string = request.params._id;
+
+    try {
+        const comic = await Comic.findById(_id).exec();
+        if (!comic) {
+            return response.status(400).json({ message: `Comic ${_id} not found.` });
+        }
+        return response.json(comic);
+    } catch (error) {
+        return response.status(400).json(error);
+    }
 });
 
 router.put("/:_id", authenticated, async (request: Request, response: Response) => {
-    const _id: number = Number(request.query._id);
-    const data = new Comic(request.body);
+    const _id: string = request.params._id;
 
-    const comic = await Comic.findByIdAndUpdate( _id, data).exec();
-    if (!comic) {
-        return response.status(400).json({ message: "No comic updated." });
+    const data = request.body as IComic;
+    if (data._id) delete data._id;
+
+    try {
+        const comic = await Comic.findByIdAndUpdate( _id, data).exec();
+        if (!comic) {
+            return response.status(400).json({ message: `Unable to update comic ${_id}.` });
+        }
+
+        return response.status(200).json(comic);
+    } catch (error) {
+        return response.status(400).json(error);
     }
-
-    return response.status(200).json({ comic });
 });
 
 router.delete("/:_id", authenticated, async (request: Request, response: Response) => {
-    const _id: number = Number(request.query._id);
+    const _id: string = request.params._id;
 
-    await Comic.replaceOne({ _id }).exec();
+    try {
+        await Comic.replaceOne({ _id }).exec();
 
-    return response.json({ message: `comic ${_id} successfully deleted.` });
+        return response.json({ message: `comic ${_id} successfully deleted.` });
+    } catch (error) {
+        return response.status(400).json(error);
+    }
 });
 
 export default router;
