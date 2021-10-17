@@ -82,7 +82,7 @@ router.delete("/:_id", authenticated, async (request: Request, response: Respons
     try {
         await User.replaceOne({ _id }).exec();
 
-        return response.json({ message: `user ${_id} successfully deleted.` });
+        return response.json({ message: `User ${_id} successfully deleted.` });
     } catch (error) {
         return response.status(400).json(error);
     }

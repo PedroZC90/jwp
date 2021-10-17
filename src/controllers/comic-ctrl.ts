@@ -43,7 +43,7 @@ router.post("/", authenticated, async (request: Request, response: Response) => 
     try {
         const exists = await Comic.exists({ url: comic.url });
         if (exists) {
-            return response.status(400).json({ message: `comic ${comic.url } already registered` });
+            return response.status(400).json({ message: `Comic ${comic.url } already registered` });
         }
 
         await comic.save();
@@ -92,7 +92,7 @@ router.delete("/:_id", authenticated, async (request: Request, response: Respons
     try {
         await Comic.replaceOne({ _id }).exec();
 
-        return response.json({ message: `comic ${_id} successfully deleted.` });
+        return response.json({ message: `Comic ${_id} successfully deleted.` });
     } catch (error) {
         return response.status(400).json(error);
     }

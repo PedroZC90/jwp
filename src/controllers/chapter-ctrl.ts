@@ -39,7 +39,7 @@ router.post("/", authenticated, async (request: Request, response: Response) => 
     
     const exists = await Chapter.exists({ url: chapter.url });
     if (exists) {
-        return response.status(400).json({ message: `chapter ${chapter.url } is already registered.` });
+        return response.status(400).json({ message: `Chapter ${chapter.url } already registered.` });
     }
 
     await chapter.save();
@@ -53,7 +53,7 @@ router.get("/:_id", authenticated, async (request: Request, response: Response) 
     try {
         const chapter = await Chapter.findById(_id).exec();
         if (!chapter) {
-            return response.status(400).json({ message: `chapter ${_id} not found.` });
+            return response.status(400).json({ message: `Chapter ${_id} not found.` });
         }
         return response.status(200).json(chapter);
     } catch(error) {
@@ -70,7 +70,7 @@ router.put("/:_id", authenticated, async (request: Request, response: Response) 
     try {
         const chapter = await Chapter.findByIdAndUpdate( _id, { ...data }).exec();
         if (!chapter) {
-            return response.status(400).json({ message: "No chapter updated." });
+            return response.status(400).json({ message: `Unable to update chapter ${_id}.` });
         }
 
         return response.status(200).json({ chapter });
@@ -85,7 +85,7 @@ router.delete("/:_id", authenticated, async (request: Request, response: Respons
     try {
         await Chapter.replaceOne({ _id }).exec();
 
-        return response.status(200).json({ message: `chapter ${_id} successfully deleted.` });
+        return response.status(200).json({ message: `Chapter ${_id} successfully deleted.` });
     } catch (error) {
         return response.status(400).json(error);
     }
