@@ -11,28 +11,49 @@ npm install
 
 Alterar URL de coneção do mongodb no arquivo **.example.env**.
 
+## Run
+
+```bash
+# run project on development mode
+npm run start:dev
+```
+
+```bash
+# run project on development mode
+npm run start
+```
+
+> É necessário copiar o arquivo **.example.env** e nomealo **.env**.
+> Neste novo arquivo deve ser alterada as variaveis de ambiente de produção.
+
 ## Index
 
 1.  [Authentication](#Authentication)
 2.  Users
-    1.  [GET /api/users](#list-of-users)
+    1.  [GET /api/users](#list-users)
     2.  [POST /api/users](#create-user)
     3.  [GET /api/users/:_id](#get-user)
     4.  [PUT /api/users/:_id](#update-user)
     5.  [DELETE /api/users/:_id](#delete-user)
 2.  Comics
-    1.  [GET /api/comics](#list-of-comics)
+    1.  [GET /api/comics](#list-comics)
     2.  [POST /api/comics](#create-comic)
     3.  [GET /api/comics/:_id](#get-comic)
     4.  [PUT /api/comics/:_id](#update-comic)
     5.  [DELETE /api/comics/:_id](#delete-comic)
+3.  Chapters
+    1.  [GET /api/chapters](#list-chapters)
+    2.  [POST /api/chapters](#create-chapter)
+    3.  [GET /api/chapters/:_id](#get-chapter)
+    4.  [PUT /api/chapters/:_id](#update-chapter)
+    5.  [DELETE /api/chapters/:_id](#delete-chapter)
 
 ## API
 
 ### Authentication
 ---
 
-Returns a JWT token.
+Retorn um token JWT para acesso.
 
 +   **Endpoint:** `/api/auth`
 
@@ -55,10 +76,10 @@ Returns a JWT token.
     - Status: `401`
     - Content: `{ "message": "User not found." }`
 
-### List Of Users
+### List Users
 ---
 
-Returns a JWT token.
+Retorna uma lista de usuários.
 
 +   **Endpoint:** `/api/users`
 
@@ -85,7 +106,6 @@ Returns a JWT token.
             "_id": "615fa88da51a2b1d6f70c2d5",
             "name": "pedrozc90",
             "email": "pedrozc90@email.com",
-            "password": "jwp",
             "admin": true,
             "__v": 0
         },
@@ -93,7 +113,6 @@ Returns a JWT token.
             "_id": "615fa8d4a51a2b1d6f70c2da",
             "name": "john",
             "email": "john@email.com",
-            "password": "john",
             "admin": false,
             "__v": 0
         }
@@ -141,7 +160,7 @@ Cria um novo usuário e retorna o objeto usuário criado.
 
 +   **Error Response:**
     -   Status: `400`
-    -   Content: `{ "message": "user ${{ email }} already registered" }`
+    -   Content: `{ "message": "User ${{ email }} already registered" }`
 
 ### Get User
 ---
@@ -242,13 +261,13 @@ Deleta um usuário.
 
 +   **Success Response:**
     - Status: `200`
-    - Content: `{ message: "user ${{ _id }} successfully deleted." }`
+    - Content: `{ message: "User ${{ _id }} successfully deleted." }`
 
 +   **Error Response:**
     -   Status: `400`
     -   Content: `{ "message": "Unable to update user ${{ _id }}." }`
 
-### List Of Comics
+### List Comics
 ---
 
 Return a list of comics.
@@ -370,7 +389,7 @@ Cria um novo quadrinho e retorna o objeto criado.
 
 +   **Error Response:**
     -   Status: `400`
-    -   Content: `{ "message": "comic ${{ url }} already registered" }`
+    -   Content: `{ "message": "Comic ${{ url }} already registered" }`
 
 ### Get Comic
 ---
@@ -503,8 +522,204 @@ Deleta um usuário.
 
 +   **Success Response:**
     - Status: `200`
-    - Content: `{ message: "comic ${{ _id }} successfully deleted." }`
+    - Content: `{ message: "Comic ${{ _id }} successfully deleted." }`
 
 +   **Error Response:**
     -   Status: `400`
-    -   Content: `{ "message": "Unable to update user ${{ _id }}." }`
+    -   Content: `{ "message": "Unable to update comic ${{ _id }}." }`
+
+### List Chapters
+---
+
+Return a list of comics.
+
++   **Endpoint:** `/api/chapters`
+
++   **Method:** `GET`
+
++   **Headers:**
+    -   **Authorization**: `Bearer {{ token }}`
+
+> token obtido na rota de autenticação.
+
++   **Params:**
+    -   **page**: page number.
+    -   **rpp**: rows per page.
+    -   **q**: query string to filter by **title**.
+    -   **from**: filter chapters by released_at >= **from**
+    -   **to**: filter chapters by released_at <=> **to**
+
+> Example: ?page=1&rpp=15&from=2021-09-01&to=2021-10-16
+
++   **Success Response:**
+    -   Status: `200`
+    -   Content:
+    
+```json
+{
+    "chapters": [
+        {
+            "_id": "616b15b4a783c14b1a411379",
+            "url": "https://www.asurascans.com/solo-leveling-chapter-169/",
+            "number": 169,
+            "released_at": "2021-10-13T03:00:00.000Z"
+        },
+        {
+            "_id": "616b17e87a61e232504cad88",
+            "url": "https://www.asurascans.com/solo-leveling-chapter-168/",
+            "number": 168,
+            "released_at": "2021-09-22T03:00:00.000Z",
+            "__v": 0
+        },
+        {
+            "_id": "616b18147a61e232504cad8c",
+            "url": "https://www.asurascans.com/solo-leveling-chapter-167/",
+            "number": 167,
+            "released_at": "2021-09-15T03:00:00.000Z",
+            "__v": 0
+        },
+        {
+            "_id": "616b18257a61e232504cad90",
+            "url": "https://www.asurascans.com/solo-leveling-chapter-166/",
+            "number": 166,
+            "released_at": "2021-09-08T03:00:00.000Z",
+            "__v": 0
+        }
+    ]
+}
+```
+
+### Create Chapter
+---
+
+Cria um novo capítulo e retorna o objeto criado.
+
++   **Endpoint:** `/api/chapter`
+
++   **Method:** `POST`
+
++   **Headers:**
+    -   **Authorization**: `Bearer {{ token }}`
+> token obtido na rota de autenticação.
+
++   **Body:**
+
+```json
+{
+    "url": "https://www.asurascans.com/solo-leveling-chapter-160/",
+    "number": 160,
+    "released_at": "2021-07-28T03:00:00.000Z"
+}
+```
+
++   **Success Response:**
+    - Status: `200`
+    - Content:
+    
+```json
+{
+            "_id": "616b18797a61e232504cada8",
+            "url": "https://www.asurascans.com/solo-leveling-chapter-160/",
+            "number": 160,
+            "released_at": "2021-07-28T03:10:00.000Z",
+            "__v": 0
+        }
+```
+
++   **Error Response:**
+    -   Status: `400`
+    -   Content: `{ "message": "Chapter ${{ url }} already registered." }`
+
+### Get Chapter
+---
+
+Busca um capitulo pelo _id.
+
++   **Endpoint:** `/api/chapters/:_id`
+
++   **Method:** `GET`
+
++   **Headers:**
+    -   **Authorization**: `Bearer {{ token }}`
+> token obtido na rota de autenticação.
+
++   **Success Response:**
+    - Status: `200`
+    - Content:
+    
+```json
+{
+    "_id": "616b18797a61e232504cada8",
+    "url": "https://www.asurascans.com/solo-leveling-chapter-160/",
+    "number": 160,
+    "released_at": "2021-07-28T03:10:00.000Z",
+    "__v": 0
+}
+```
+
++   **Error Response:**
+    -   Status: `400`
+    -   Content: `{ "message": "Chapter ${{ _id }} not found." }`
+
+### Update Chapter
+---
+
+Atualiza os campos de um chapter e retorna o objeto atualizado.
+
++   **Endpoint:** `/api/chaoters/:id`
+
++   **Method:** `PUT`
+
++   **Headers:**
+    -   **Authorization**: `Bearer {{ token }}`
+> token obtido na rota de autenticação.
+
++   **Body:**
+
+```json
+// _id: 616b18797a61e232504cada8
+{
+    "url": "https://www.asurascans.com/solo-leveling-chapter-160/",
+    "number": 160,
+    "released_at": "2021-07-28T03:10:00.000Z"
+}
+```
+
++   **Success Response:**
+    - Status: `200`
+    - Content:
+    
+```json
+{
+    "_id": "616b18797a61e232504cada8",
+    "url": "https://www.asurascans.com/solo-leveling-chapter-160/",
+    "number": 160,
+    "released_at": "2021-07-28T03:10:00.000Z",
+    "__v": 0
+}
+```
+
++   **Error Response:**
+    -   Status: `400`
+    -   Content: `{ "message": "Unable to update comic ${{ _id }}." }`
+
+### Delete Chapter
+---
+
+Deleta um capitulo.
+
++   **Endpoint:** `/api/chapters/:_id`
+
++   **Method:** `PUT`
+
++   **Headers:**
+    -   **Authorization**: `Bearer {{ token }}`
+> token obtido na rota de autenticação.
+
++   **Success Response:**
+    - Status: `200`
+    - Content: `{ message: "Chapter ${{ _id }} successfully deleted." }`
+
++   **Error Response:**
+    -   Status: `400`
+    -   Content: `{ "message": "Unable to update chapter ${{ _id }}." }`
