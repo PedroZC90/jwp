@@ -15,7 +15,7 @@ router.get("/", authenticated , async (request: Request, response: Response) => 
     const rpp = Number(request.query.rpp) || 15;
     const from = (typeof request.query.from === "string") ? new Date(request.query.from) : null;
     const to = (typeof request.query.to === "string") ? new Date(request.query.to) : null;
-    const comic = request.query.comic as string;
+    const title = request.query.title as string;
 
     if (page < 0) {
         return response.status(400).json({ message: "Parameter 'page' can not be negative." });
@@ -28,8 +28,8 @@ router.get("/", authenticated , async (request: Request, response: Response) => 
     if (from) opts.released_at.$gte = from.toISOString();
     if (to) opts.released_at.$lt = to.toISOString();
     
-    if (comic) {
-        const comics = (await Comic.find({ title: { $regex: comic, $options: "i" } }).select({ _id: 1 }).exec()).map((v) => v._id);
+    if (title) {
+        const comics = (await Comic.find({ title: { $regex: title, $options: "i" } }).select({ _id: 1 }).exec()).map((v) => v._id);
         if (comics && comics.length > 0) {
             opts.comic = { $in: comics };
         }

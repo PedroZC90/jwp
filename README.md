@@ -545,9 +545,9 @@ Return a list of comics.
 +   **Params:**
     -   **page**: page number.
     -   **rpp**: rows per page.
-    -   **q**: query string to filter by **title**.
-    -   **from**: filter chapters by released_at >= **from**
-    -   **to**: filter chapters by released_at <=> **to**
+    -   **from**: filtra os capitulos com data de lanámento maiores que a data informada, onde **released_at >= from**
+    -   **to**: filtra os capitulos pela data de lançamento inferior a data informada, onde **released_at < to**
+    -   **title**: filtra pelo **título** do quadrinho. (title)
 
 > Example: ?page=1&rpp=15&from=2021-09-01&to=2021-10-16
 
