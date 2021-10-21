@@ -2,6 +2,7 @@ import { Request, Response, Router } from "express";
 
 import { authenticated } from "../middlewares/authentication-middleware";
 import Chapter from "../models/Chapter";
+import Comic from "../models/Comic";
 
 const router: Router = Router();
 
@@ -14,6 +15,7 @@ router.get("/", authenticated , async (request: Request, response: Response) => 
     const rpp = Number(request.query.rpp) || 15;
     const from = (typeof request.query.from === "string") ? new Date(request.query.from) : null;
     const to = (typeof request.query.to === "string") ? new Date(request.query.to) : null;
+    const comic = request.query.comic as string;
 
     if (page < 0) {
         return response.status(400).json({ message: "Parameter 'page' can not be negative." });
@@ -25,10 +27,18 @@ router.get("/", authenticated , async (request: Request, response: Response) => 
     if (from || to) opts.released_at = {};
     if (from) opts.released_at.$gte = from.toISOString();
     if (to) opts.released_at.$lt = to.toISOString();
+    
+    if (comic) {
+        const comics = (await Comic.find({ title: { $regex: comic, $options: "i" } }).select({ _id: 1 }).exec()).map((v) => v._id);
+        if (comics && comics.length > 0) {
+            opts.comic = { $in: comics };
+        }
+    }
 
     const chapters = await Chapter.find({ ...opts })
         .skip(rpp * (page - 1))
         .limit(rpp)
+        .populate("comic")
         .exec();
 
     return response.json({ chapters });

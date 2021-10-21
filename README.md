@@ -611,6 +611,32 @@ Cria um novo capítulo e retorna o objeto criado.
     "released_at": "2021-07-28T03:00:00.000Z"
 }
 ```
+> Sem referenciar o quadrinho.
+
+```json
+{
+    "url": "https://www.asurascans.com/solo-leveling-chapter-160/",
+    "number": 160,
+    "released_at": "2021-07-28T03:00:00.000Z",
+    "comic": "6168d87544069de7bd57ff6e"
+}
+```
+> Referenciando o quadrinho pelo ObjectID.
+
+```json
+{
+    "url": "https://www.asurascans.com/solo-leveling-chapter-160/",
+    "number": 160,
+    "released_at": "2021-07-28T03:00:00.000Z",
+    "comic": {
+        "_id": "6168d87544069de7bd57ff6e",
+        "url": "https://www.asurascans.com/comics/solo-leveling/",
+        "title": "Solo Leveling",
+        ...
+    }
+}
+```
+> Referenciando o quadrinho pelo objeto.
 
 +   **Success Response:**
     - Status: `200`
