@@ -207,6 +207,8 @@ Atualiza os campos de um usuário. Retorno o usuário atualizado.
     -   **Authorization**: `Bearer {{ token }}`
 > token obtido na rota de autenticação.
 
++   **Path:** `_id: "616b53543098fc9916134c6f" `
+
 +   **Body:**
 
 ```json
@@ -450,6 +452,8 @@ Atualiza os campos de um quadrinho e retorna o objeto atualizado.
     -   **Authorization**: `Bearer {{ token }}`
 > token obtido na rota de autenticação.
 
++   **Path:** ` _id: "616b59d80a9498f8b3a69f4a" `
+
 +   **Body:**
 
 ```json
@@ -631,8 +635,7 @@ Cria um novo capítulo e retorna o objeto criado.
     "comic": {
         "_id": "6168d87544069de7bd57ff6e",
         "url": "https://www.asurascans.com/comics/solo-leveling/",
-        "title": "Solo Leveling",
-        ...
+        "title": "Solo Leveling"
     }
 }
 ```
@@ -699,11 +702,11 @@ Atualiza os campos de um chapter e retorna o objeto atualizado.
 +   **Headers:**
     -   **Authorization**: `Bearer {{ token }}`
 > token obtido na rota de autenticação.
++   **Path:** `_id: 616b18797a61e232504cada8`
 
 +   **Body:**
 
 ```json
-// _id: 616b18797a61e232504cada8
 {
     "url": "https://www.asurascans.com/solo-leveling-chapter-160/",
     "number": 160,
