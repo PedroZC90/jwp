@@ -6,7 +6,7 @@ export interface IChapter extends Document {
     url: string;
     number: number;
     released_at?: Date;
-    comic?: IComic;
+    comic: IComic | string;
 }
 
 //  2. create a schema corresponding to the document interface.
