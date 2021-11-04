@@ -6,6 +6,10 @@ import settings from "../../settings";
 import * as data from "../../public/files/data.json";
 import houses from "../../public/files/houses.json";
 
+// --------------------------------------------------
+// EXERCICIO 07:
+// --------------------------------------------------
+
 const router: Router = Router();
 
 interface Info {

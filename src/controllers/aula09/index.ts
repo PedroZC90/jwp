@@ -32,7 +32,7 @@ const data: IData = crud;
 const router: Router = Router();
 
 // --------------------------------------------------
-// USUARIO
+// EXERCICIO 10:
 // --------------------------------------------------
 
 router.get("/usuarios/", (request: Request, response: Response) => {
