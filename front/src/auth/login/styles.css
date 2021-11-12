@@ -1,0 +1,11 @@
+.login {
+    display: grid;
+    place-items: center;
+    gap: 16px;
+}
+
+.login-form {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+}

@@ -25,4 +25,19 @@ router.post("/", async (request: Request, response: Response) => {
     return response.status(200).json({ token });
 });
 
+router.post("/register", async (request: Request, response: Response) => {
+    const user = new User(request.body);
+
+    const exists = await User.exists({ email: user.email });
+    if (exists) {
+        return response
+            .status(400)
+            .json({ message: `user ${user.email} already registered` });
+    }
+
+    await user.save();
+
+    return response.status(201).json(user);
+});
+
 export default router;

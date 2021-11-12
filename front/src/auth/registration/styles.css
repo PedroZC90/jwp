@@ -1,0 +1,11 @@
+.registration {
+    display: grid;
+    place-items: center;
+    gap: 16px;
+}
+
+.registration-form {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+}
