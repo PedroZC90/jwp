@@ -1,18 +1,31 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import { BrowserRouter, Navigate, Routes, Route } from "react-router-dom";
 
 import "./index.css";
 import App from "./app";
-// import reportWebVitals from "./reportWebVitals";
+import Login from "./auth/login-page";
+import Registration from "./auth/register-page";
+import ComicList from "./comics/comic-list";
+import ComicPage from "./comics/comic-page";
+import NotFound from "./not-found";
+
+const root = document.getElementById("root");
 
 ReactDOM.render(
     <React.StrictMode>
-        <App />
+        <BrowserRouter>
+            <Routes>
+                <Route path="/" element={ (false) ? <Navigate replace to="/login" /> : <App />} >
+                    <Route path="/comics" element={<ComicList />} />
+                    <Route path="/comics/:_id" element={<ComicPage />} />
+                    <Route path="/comics/create" element={<ComicPage />} />
+                </Route>
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Registration />} />
+                <Route path="*" element={<NotFound />} />
+            </Routes>
+        </BrowserRouter>
     </React.StrictMode>,
-    document.getElementById("root"),
+    root,
 );
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-// reportWebVitals();

@@ -1,4 +1,5 @@
 import Axios from "axios";
+import AuthService from "./services/auth";
 
 export const axios = Axios.create({
     baseURL: `${process.env.REACT_APP_ROOT_API || "http://127.0.0.1:9000" }/api`,
@@ -10,7 +11,7 @@ export const axios = Axios.create({
     responseType: "json",
     transformRequest: [
         (data, headers) => {
-            const token = localStorage.getItem("token");
+            const token = AuthService.getToken();
             if (token) {
                 headers["Authorization"] = `Bearer ${token}`;
             }
