@@ -1,6 +1,6 @@
 import { Request, Response, Router } from "express";
 import { signJwtToken } from "../middlewares/authentication-middleware";
-import User, { IUserCredentials } from "../models/User";
+import User, { IUserCredentials, IUserRegistration } from "../models/User";
 
 const router: Router = Router();
 
@@ -26,7 +26,18 @@ router.post("/", async (request: Request, response: Response) => {
 });
 
 router.post("/register", async (request: Request, response: Response) => {
-    const user = new User(request.body);
+    const data = request.body as IUserRegistration;
+    if (!data) {
+        return response
+            .status(400)
+            .json({ massage: "User information not found." });
+    } else if (data.password !== data.password_confirm) {
+        return response
+            .status(400)
+            .json({ massage: "Passwords do not match." });
+    }
+
+    const user = new User(data);
 
     const exists = await User.exists({ email: user.email });
     if (exists) {
@@ -37,7 +48,17 @@ router.post("/register", async (request: Request, response: Response) => {
 
     await user.save();
 
-    return response.status(201).json(user);
+    const token = await signJwtToken(user, false);
+    if (!token) {
+        return response
+            .status(401)
+            .json({ message: "Unable to create token." });
+    }
+
+    // remove password before send response
+    user.set("password", undefined);
+
+    return response.status(201).json({ token, user });
 });
 
 export default router;

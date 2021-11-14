@@ -6,6 +6,7 @@ export interface IComic extends Document {
     title: string;
     type?: string;
     status?: string;
+    cover_url?: string;
     genres?: string[];
     authors?: string[];
     artists?: string[];
@@ -17,6 +18,7 @@ const ComicSchema = new Schema<IComic>({
     title: { type: String, required: true },
     type: { type: String, required: false },
     status: { type: String, required: false },
+    cover_url: { type: String, required: false },
     genres: [ String ],
     authors: [ String ],
     artists: [ String ]

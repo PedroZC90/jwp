@@ -1,5 +1,12 @@
 import { Document, Model, model, Schema } from "mongoose";
 
+export interface IUserRegistration {
+    name?: string,
+    email?: string,
+    password?: string,
+    password_confirm?: string
+}
+
 //  1. create a interface representing a decumento in mongodb.
 export interface IUserCredentials {
     email?: string,

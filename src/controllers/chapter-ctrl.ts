@@ -22,6 +22,7 @@ router.get("/", authenticated, async (request: Request, response: Response) => {
             ? new Date(request.query.to)
             : null;
     const title = request.query.title as string;
+    const comic_id = request.query.comic_id as string;
 
     if (page < 0) {
         return response
@@ -47,6 +48,10 @@ router.get("/", authenticated, async (request: Request, response: Response) => {
         if (comics && comics.length > 0) {
             opts.comic = { $in: comics };
         }
+    }
+
+    if (comic_id) {
+        opts.comic = comic_id;
     }
 
     const chapters = await Chapter.find({ ...opts })
@@ -137,6 +142,24 @@ router.delete(
             return response
                 .status(200)
                 .json({ message: `Chapter ${_id} successfully deleted.` });
+        } catch (error) {
+            return response.status(400).json(error);
+        }
+    },
+);
+
+router.delete(
+    "/",
+    authenticated,
+    async (request: Request, response: Response) => {
+        const _id: string = request.params._id;
+
+        try {
+            const result = await Chapter.deleteMany({}).exec();
+
+            return response
+                .status(200)
+                .json({ message: `${ result.deletedCount } chapters deleted.` });
         } catch (error) {
             return response.status(400).json(error);
         }

@@ -1,4 +1,4 @@
-import { Request, Response, Router } from "express";
+import { NextFunction, Request, Response, Router } from "express";
 
 import { authenticated } from "../middlewares/authentication-middleware";
 import User from "../models/User";
@@ -8,7 +8,6 @@ const router: Router = Router();
 // --------------------------------------------------
 // USUARIO
 // --------------------------------------------------
-
 router.get("/", authenticated, async (request: Request, response: Response) => {
     const page = Number(request.query.page) || 1;
     const rpp = Number(request.query.rpp) || 15;
@@ -50,6 +49,9 @@ router.post(
         }
 
         await user.save();
+        
+        // remove password before send response
+        user.set("password", undefined);
 
         return response.status(201).json(user);
     },
@@ -58,20 +60,21 @@ router.post(
 router.get(
     "/:_id",
     authenticated,
-    async (request: Request, response: Response) => {
+    async (request: Request, response: Response, next: NextFunction) => {
         const _id: string = request.params._id;
         try {
-            const user = await User.findById(_id).exec();
+            const user = await User.findById(_id, { password: 0 }).exec();
             if (!user) {
                 return response
                     .status(400)
                     .json({ message: `User ${_id} not found.` });
             }
+            
             return response.status(200).json(user);
         } catch (error) {
             return response.status(400).json(error);
         }
-    },
+    }
 );
 
 router.put(
@@ -91,6 +94,9 @@ router.put(
                     .json({ message: `Unable to update user ${_id}.` });
             }
 
+            // remove password before send response
+            user.set("password", undefined);
+
             return response.status(200).json(user);
         } catch (error) {
             return response.status(400).json(error);
@@ -106,10 +112,7 @@ router.delete(
 
         try {
             await User.deleteOne({ _id }).exec();
-
-            return response.json({
-                message: `User ${_id} successfully deleted.`,
-            });
+            return response.json({ message: `User ${_id} successfully deleted.` });
         } catch (error) {
             return response.status(400).json(error);
         }
