@@ -135,4 +135,29 @@ router.delete(
     },
 );
 
+router.post(
+    "/:_id/chapters",
+    authenticated,
+    async (request: Request, response: Response) => {
+        try {
+            const _id: string = request.params._id;
+            const chapter = new Chapter(request.body);
+
+            const comic = await Comic.findById(_id).exec();
+            if (!comic) {
+                return response
+                    .status(400)
+                    .json({ message: `Comic ${_id} not found.` });
+            }
+            
+            chapter.comic = comic;
+            await chapter.save();
+
+            return response.status(201).json({ chapter });
+        } catch (error) {
+            return response.status(400).json(error);
+        }
+    },
+);
+
 export default router;

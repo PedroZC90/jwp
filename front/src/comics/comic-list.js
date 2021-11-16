@@ -1,57 +1,47 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
+
 import { axios } from "../axios";
 
 import "./styles.css";
 
-export default class ComicList extends React.Component {
-    constructor() {
-        super();
+const ComicList = () => {
+    const navigate = useNavigate();
 
-        this.state = {
-            page: 1,
-            rpp: 15,
-            comics: [],
-        };
-    }
+    const [comics, setComics] = useState([]);
+    const [page, setPage] = useState(1);
+    const rpp = 15;
+    const isMounted = false;
 
-    componentDidMount() {
-        this.load();
-    }
-
-    async load() {
-        const params = {
-            page: this.state.page,
-            rpp: this.state.rpp,
-        };
+    const load = async () => {
+        const params = { page: page, rpp: rpp };
         const comics = await axios
             .get("/comics", { params })
             .then((res) => (res && res.data && res.data.comics) || []);
 
-        this.setState({ comics });
-    }
-
-    next = async (event) => {
-        event.preventDefault();
-
-        const page = this.state.page + 1;
-        this.setState({ page }, () => {
-            this.load();
-        });
+        setComics(comics);
     };
 
-    previous = (event) => {
+    const next = async (event) => {
         event.preventDefault();
-        this.setState({ page: this.state.page - 1 }, () => {
-            this.load();
-        });
+
+        setPage(page + 1);
+        await load();
     };
 
-    render_comics = (comics = []) => {
+    const previous = async (event) => {
+        event.preventDefault();
+
+        setPage(page - 1);
+        await load();
+    };
+
+    const render_comics = (comics = []) => {
         if (comics && Array.isArray(comics) && comics.length > 0) {
-            return comics.map((comic, index) => {
+            return comics.map((comic) => {
                 return (
-                    <a className="no-color" href={`comics/${comic._id}`}>
-                        <div key={comic._id}>
+                    <a className="box no-color" href={`comics/${comic._id}`} key={comic._id}>
+                        <div >
                             <h2>{comic.title}</h2>
                             <span>{comic.type}</span>
                         </div>
@@ -61,27 +51,34 @@ export default class ComicList extends React.Component {
         } else {
             return <span>No comic found.</span>;
         }
-    }
+    };
 
-    render() {
-        const grid = this.render_comics(this.state.comics);
+    const create = (event) => {
+        event.preventDefault();
+        navigate("/comics/create", { replace: true });
+    };
 
-        return (
-            <div className="comic-list">
+    useEffect(() => {
+        load();
+    }, [ isMounted ]);
+
+    return (
+        <div className="comic-list">
+            <div className="header">
                 <h2>Comics</h2>
-                <div className="comics-ctrl">
-                    <button id="create">Create</button>
-                </div>
-                <div className="comics-grid">{ grid }</div>
-                <div className="comics-ctrl">
-                    {
-                        (this.state.page > 1) ?
-                            (<button id="previous" onClick={ this.previous }>Back</button>) :
-                            (<></>)
-                    }
-                    <button id="next" onClick={ this.next }>Next</button>
-                </div>
             </div>
-        );
-    }
-}
+            <div className="comics-ctrl">
+                <button id="create" onClick={create}>Create</button>
+            </div>
+            <div className="comics-grid">{render_comics(comics)}</div>
+            <div className="comics-ctrl">
+                { (page > 1) ? (
+                <button id="previous" onClick={previous}>Back</button>
+                ) : (<></>) }
+                <button id="next" onClick={next}>Next</button>
+            </div>
+        </div>
+    );
+};
+
+export default ComicList;

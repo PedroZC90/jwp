@@ -7,6 +7,11 @@
 
     --text-color: rgb(70, 70, 70);
     --border-color: #aaa;
+
+    --spacing-xs: 4px;
+    --spacing-sm: 8px;
+    --spacing-md: 16px;
+    --spacing-lg: 24px;
 }
 
 #root {
@@ -24,6 +29,7 @@ body {
     font-size: 16px;
     font-style: normal;
     font-weight: normal;
+    background-color: var(--light-color);
 }
 
 code {
@@ -48,4 +54,22 @@ button:focus {
     background-color: #eee;
     color: var(--primary-color);
     border-color: var(--primary-color);
+}
+
+.page {
+    padding: 16px;
+    width: 80%;
+    margin: 0 auto;
+    height: 100vh;
+}
+
+.header {
+    background-color: var(--text-color);
+    color: #fff;
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+}
+
+.header h2 {
+    margin: unset;
 }

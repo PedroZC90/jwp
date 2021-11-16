@@ -15,6 +15,10 @@ class AuthenticationService {
         return (typeof token === "string" && token.length > 0);
     }
 
+    logout = () => {
+        localStorage.clear();
+    }
+
 }
 
 const AuthService = new AuthenticationService();
