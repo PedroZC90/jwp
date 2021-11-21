@@ -27,9 +27,7 @@ const Registration = () => {
         const response = await axios.post("/auth/register", state);
         if (!response || !response.data) return;
 
-        
-        const user = response.data.user;
-        console.log("REGISTERED USER:", user);
+        //const user = response.data.user;
         
         const token = response.data.token;
         if (token) {

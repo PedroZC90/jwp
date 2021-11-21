@@ -16,7 +16,7 @@ ReactDOM.render(
     <React.StrictMode>
         <BrowserRouter>
             <Routes>
-                <Route path="/" element={ (false) ? <Navigate replace to="/login" /> : <App />} >
+                <Route path="/" element={ <App />} >
                     <Route path="/comics" element={<ComicList />} />
                     <Route path="/comics/:_id" element={<ComicPage />} />
                     <Route path="/comics/create" element={<ComicPage />} />
