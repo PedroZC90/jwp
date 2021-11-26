@@ -1,6 +1,7 @@
 :root {
     --primary-color: #61dafb;
     --secondary-color: #61dafb;
+    --error-color: #e63535;
 
     --dark-color: #16151d;
     --light-color: #f1f1f1;
@@ -56,6 +57,20 @@ button:focus {
     border-color: var(--primary-color);
 }
 
+button.delete {
+    background-color: var(--error-color);
+    color: #fff;
+    border: 1px solid var(--border-color);
+    padding: 4px;
+}
+
+button.delete:hover,
+button.delete:focus {
+    background-color: #eee;
+    color: var(--text-color);
+    border-color: var(--text-color);
+}
+
 .page {
     padding: 16px;
     width: 80%;
@@ -72,4 +87,9 @@ button:focus {
 
 .header h2 {
     margin: unset;
+}
+
+.warning {
+    margin: var(--spacing-md);
+    color: red;
 }

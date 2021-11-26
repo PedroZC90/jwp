@@ -55,12 +55,15 @@ router.get("/", authenticated, async (request: Request, response: Response) => {
     }
 
     const chapters = await Chapter.find({ ...opts })
+        .sort({ "number": 'desc' })
         .skip(rpp * (page - 1))
         .limit(rpp)
         .populate("comic")
         .exec();
 
-    return response.json({ chapters });
+    const total = await Chapter.countDocuments({ ...opts }).exec();
+
+    return response.json({ chapters, total });
 });
 
 router.post(

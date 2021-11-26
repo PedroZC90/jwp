@@ -18,6 +18,16 @@
     margin-bottom: var(--spacing-md);
 }
 
+.comics-grid .card {
+    display: grid;
+    gap: var(--spacing-md);
+    grid-template-columns: 1fr;
+}
+
+.comics-grid .card button {
+    vertical-align: bottom;
+}
+
 .comics-grid .box {
     border: 1px solid var(--border-color);
     padding: var(--spacing-xs);
@@ -26,9 +36,27 @@
 .comics-ctrl {
     display: grid;
     gap: 16px;
-    grid-template-columns: repeat(auto-fit, minmax(30px, 70px));
+    /* grid-template-columns: repeat(auto-fit, minmax(30px, 70px)); */
+    grid-template-columns: repeat(2, 1fr) 100px 100px;
+    grid-template-areas: "select ... btn1 btn2";
     justify-content: end;
     margin-bottom: var(--spacing-md);
+}
+
+.comics-ctrl div.box {
+    grid-area: select;
+    display: grid;
+    gap: var(--spacing-md);
+    grid-template-columns: minmax(40px, 75px) minmax(150px, 250px);
+    height: 30px;
+}
+
+.comics-ctrl button[id="filter"] {
+    grid-area: btn1;
+}
+
+.comics-ctrl button[id="create"] {
+    grid-area: btn2;
 }
 
 a.no-color:hover,
@@ -77,6 +105,10 @@ a.no-color:visited {
     margin: auto 0;
 }
 
+#comic-page .form .actions button {
+    width: 100%;
+}
+
 /* NEW CHAPTER */
 #comic-page .new_chapter {
     margin-bottom: var(--spacing-md);
@@ -92,6 +124,12 @@ a.no-color:visited {
     grid-template-columns: 1fr 1fr 1fr 1fr;
 }
 
+#comic-page .new_chapter .content .actions {
+    display: grid;
+    gap: var(--spacing-md);
+    grid-template-columns: repeat(2, 1fr);
+}
+
 /* CHAPTERS */
 #comic-page .chapters .header {
     display: grid;
@@ -103,15 +141,25 @@ a.no-color:visited {
 #comic-page .chapters .grid {
     display: grid;
     gap: var(--spacing-md);
-    grid-template-columns: repeat(auto-fit, minmax(275px, 300px));
+    /* grid-template-columns: repeat(auto-fit, minmax(275px, 300px)); */
+    grid-template-columns: 1fr;
 }
 
 #comic-page .chapters .chapter {
     display: grid;
     gap: 8px;
-    grid-template-columns: 1fr;
+    grid-template-columns: 2fr 2fr 1fr;
     padding: 8px;
     border: 1px solid var(--border-color);
+}
+
+#comic-page .chapters .chapter a {
+    text-align: start;
+    margin-left: 16px;
+}
+
+#comic-page .chapters .chapter span {
+    text-align: end;
 }
 
 #comic-page .chapters .no-chapters,

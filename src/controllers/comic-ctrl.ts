@@ -35,12 +35,14 @@ router.get("/", authenticated, async (request: Request, response: Response) => {
     if (status) opts.status = status;
     if (genres) opts.genres = { $in: genres };
 
+    const total = await Comic.countDocuments({ ...opts }).exec();
+
     const comics = await Comic.find({ ...opts })
         .skip(rpp * (page - 1))
         .limit(rpp)
         .exec();
 
-    return response.json({ comics });
+    return response.json({ comics, total });
 });
 
 router.post(

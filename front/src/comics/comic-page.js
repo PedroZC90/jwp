@@ -12,6 +12,7 @@ const ComicPage = () => {
     const [chapters, setChapters] = useState([]);
     const [new_chapter, setNewChapter] = useState({ url: "", number: 0, released_at: new Date().toISOString(), comid_id: params._id });
     const [show_new_chapter, setShowNewChapter] = useState(false);
+    const [error_message, setErrorMessage] = useState(null);
 
     const loadChapters = async () => {
         const temp = await axios
@@ -26,12 +27,22 @@ const ComicPage = () => {
 
         const temp = await axios
             .get(`/comics/${params._id}`)
-            .then((res) => (res && res.data) || null);
+            .then((res) => (res && res.data) || null)
+            .catch((e) => {
+                setErrorMessage((e.response) ? e.response.data.message : e);
+                resetErrorMessage();
+            });
 
         setComic(temp);
 
         await loadChapters();
     };
+
+    const resetErrorMessage = () => {
+        setTimeout(() => {
+            setErrorMessage(null);
+        }, 5000);
+    }
 
     const onChange = (event) => {
         event.preventDefault();
@@ -102,10 +113,13 @@ const ComicPage = () => {
         axios.post(`/comics/${params._id}/chapters`, new_chapter).then((res) => {
             if (!res || !res.data) return;
             
-            setChapters(chapters.concat([ res.data.chapter ]));
+            setChapters(chapters.concat([ res.data.chapter ]).sort((a, b) => b.number - a.number));
 
             setNewChapter({ url: "", number: 0, released_at: new Date().toISOString(), comid_id: params._id });
             setShowNewChapter(false);
+        }).catch((e) => {
+            setErrorMessage((e.response) ? e.response.data.message : e);
+            resetErrorMessage();
         });
     }
 
@@ -113,6 +127,19 @@ const ComicPage = () => {
         setShowNewChapter(false);
     }
 
+    const deleteChapter = (index) => {
+        const chapter = chapters[index];
+        return (event) => {
+            event.preventDefault();
+            axios.delete(`/chapters/${ chapter._id }`).then((response) => {
+                setChapters(chapters.filter((v, i) => i !== index));
+            })
+            .catch((e) => {
+                setErrorMessage((e.response) ? e.response.data.message : e);
+                resetErrorMessage();
+            });
+        }
+    }
 
     const formatDate = (released_at) => {
         const dt = new Date(released_at);
@@ -131,8 +158,9 @@ const ComicPage = () => {
         if (chapters && Array.isArray(chapters) && chapters.length > 0) {
             return chapters.map((v, index) => (
                 <div className="chapter" key={v._id || index}>
-                    <a className="no-color" href={v.url}  >{`Chapter ${v.number}`}</a>
+                    <a className="no-color" href={v.url} target="_blank" >{`Chapter ${v.number}`}</a>
                     <span>{ formatDate(v.released_at) }</span>
+                    <button className="delete" onClick={ deleteChapter(index) }>Delete</button>
                 </div>));
         }
         return (
@@ -144,6 +172,7 @@ const ComicPage = () => {
 
     return (
         <div id="comic-page" className="page">
+            { (error_message) ? <span className="warning">{ error_message }</span> : <></> }
             <div className="header">
                 <h2>Comic</h2>
             </div>
